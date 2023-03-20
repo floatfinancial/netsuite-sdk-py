@@ -10,7 +10,10 @@ def connect_tba():
         consumer_key=os.getenv('NS_CONSUMER_KEY'),
         consumer_secret=os.getenv('NS_CONSUMER_SECRET'),
         token_key=os.getenv('NS_TOKEN_KEY'),
-        token_secret=os.getenv('NS_TOKEN_SECRET')
+        token_secret=os.getenv('NS_TOKEN_SECRET'),
+        # Setting this to False gets everything back (populates sublists)
+        # https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4170181850.html
+        # search_body_fields_only=False
     )
 
 
