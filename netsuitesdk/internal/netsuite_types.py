@@ -31,7 +31,8 @@ COMPLEX_TYPES = {
         'StringCustomFieldRef',
         'BooleanCustomFieldRef',
         'CustomRecordRef',
-        'SelectCustomFieldRef'
+        'SelectCustomFieldRef',
+        'AttachBasicReference'
     ],
 
     # ns4: https://webservices.netsuite.com/xsd/platform/v2017_2_0/messages.xsd
