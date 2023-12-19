@@ -87,7 +87,7 @@ class JournalEntries(ApiBase):
         je = self._build_journal_entry_data(data)
 
         logger.debug('able to create je = %s', je)
-        res = self.ns_client.upsert(je)
+        res = self.ns_client.upsert(je, 'journal_entry')
         return self._serialize(res)
 
     def post_batch(self, records) -> [OrderedDict]:
