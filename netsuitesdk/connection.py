@@ -30,6 +30,7 @@ from .api.tax_items import TaxItems
 from .api.tax_groups import TaxGroups
 from .api.price_level import PriceLevel
 from .api.vendor_subsidiary_relationships import VendorSubsidiaryRelationships
+from .api.items import Items
 from .internal.client import NetSuiteClient
 
 
@@ -79,3 +80,4 @@ class NetSuiteConnection:
         self.price_level = PriceLevel(ns_client)
         self.usages = Usage(ns_client)
         self.vendor_subsidiary_relationships = VendorSubsidiaryRelationships(ns_client)
+        self.items = Items(ns_client)

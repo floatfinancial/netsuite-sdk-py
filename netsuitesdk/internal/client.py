@@ -22,6 +22,10 @@ from .exceptions import *
 from .netsuite_types import *
 
 
+from netsuitesdk.errors.parser import ErrorParser
+from netsuitesdk.errors.helpers import export_error_matcher
+
+
 class NetSuiteClient:
     """The Netsuite client class providing access to the Netsuite
     SOAP/WSDL web service"""
@@ -286,6 +290,7 @@ class NetSuiteClient:
     def _request_error(self, service_name, detail, error_cls=None):
         if error_cls is None:
             error_cls = NetSuiteRequestError
+
         exc = error_cls(
             "An error occured in a {service_name} request: {msg}".format(
                 service_name=service_name,
@@ -361,7 +366,6 @@ class NetSuiteClient:
         :rtype: Record
         :raises ValueError: if neither internalId nor externalId was passed
         """
-
         recordType = recordType[0].lower() + recordType[1:]
         if internalId is not None:
             record_ref = self.RecordRef(type=recordType, internalId=internalId)
@@ -372,7 +376,6 @@ class NetSuiteClient:
 
         response = self.request('get', baseRef=record_ref)
         response = response.body.readResponse
-
         status = response.status
         if status.isSuccess:
             record = response['record']
@@ -475,7 +478,7 @@ class NetSuiteClient:
             exc = self._request_error('searchMoreWithId', detail=status['statusDetail'][0])
             raise exc
 
-    def upsert(self, record):
+    def upsert(self, record, record_type=None):
         """
         Add an object of type recordType with given externalId..
         If a record of specified type with matching externalId already
@@ -503,6 +506,16 @@ class NetSuiteClient:
             return record_ref
         else:
             exc = self._request_error('upsert', detail=status['statusDetail'][0])
+
+            if record_type:
+                try: 
+                    error_parser = ErrorParser(self.get)
+                    error_dict = export_error_matcher(exc.message, record_type)
+                    message = error_parser.export_error_parser(error_dict, exc.message)
+                    exc.message = message
+                except Exception as e:
+                    self.logger.debug('Error parsing error message', e.message)
+
             raise exc
 
     def basic_stringfield_search(self, type_name, attribute, value, operator=None):
